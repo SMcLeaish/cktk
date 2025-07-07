@@ -11,3 +11,26 @@ dependencies = [
     "pydantic>=2.11.7",
     "pyyaml>=6.0.2",
 ]
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+extend-select = ["E", "N", "B", "R", "I", "ANN", "PL", "UP", "D", "DOC", "TRY", "FURB", "F", "W"]
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+docstring-code-format = true
+docstring-code-line-length = 71
+preview = true
+
+[tool.ruff.lint.pycodestyle]
+max-doc-length = 71
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.pyright]
+include = ["src"]
+typeCheckingMode = "strict"

@@ -1,10 +1,10 @@
 """Base class for Network Graph Object generating plugins."""
 
-from pathlib import Path
 import polars as pl
-from cktk.schemas.network_graph_object import NetworkGraphObject
-from cktk.core.types import NodeList, EdgeList, EdgeAttrDict
+
+from cktk.core.types import EdgeAttrDict, EdgeList, NodeList
 from cktk.schemas.network_graph_config import NetworkGraphConfig
+from cktk.schemas.network_graph_object import NetworkGraphObject
 
 
 class NetworkGraphFactory:
@@ -32,7 +32,8 @@ class NetworkGraphFactory:
         self.df = df
         if self.config.filter_on_column and self.config.filter_value:
             self.df = self.df.filter(
-                pl.col(self.config.filter_on_column) == self.config.filter_value
+                pl.col(self.config.filter_on_column)
+                == self.config.filter_value
             )
         self._explode()
         self._create_edges()
@@ -43,9 +44,9 @@ class NetworkGraphFactory:
             edges=self.edges_list,
             source=self.config.source,
             metadata={
-                "node_size_variable": self.config.node_size_variable,
-                "node_color_variable": self.config.node_color_variable,
-                "edge_label_variable": self.config.edge_label_variable,
+                'node_size_variable': self.config.node_size_variable,
+                'node_color_variable': self.config.node_color_variable,
+                'edge_label_variable': self.config.edge_label_variable,
             },
             metrics=None,
             colormap=None,
@@ -62,27 +63,30 @@ class NetworkGraphFactory:
 
         """
         if not self.config.edges:
-            raise ValueError("EDGES must be defined in the plugin subclass.")
+            raise ValueError('EDGES must be defined in the plugin subclass.')
 
         edge_dfs: list[pl.DataFrame] = []
 
         for source_col, target_col in self.config.edges:
-            if source_col not in self.df.columns or target_col not in self.df.columns:
+            if (
+                source_col not in self.df.columns
+                or target_col not in self.df.columns
+            ):
                 raise ValueError(
-                    f"Missing expected column: {source_col} or {target_col}"
+                    f'Missing expected column: {source_col} or {target_col}'
                 )
 
             selected_cols = [
-                pl.col(source_col).alias("source"),
-                pl.col(target_col).alias("target"),
+                pl.col(source_col).alias('source'),
+                pl.col(target_col).alias('target'),
             ]
             for attr in self.config.edge_attrs:
                 if attr in self.df.columns:
                     selected_cols.append(pl.col(attr))
 
-            temp_edges = self.df.select(selected_cols).with_columns(
-                [pl.lit(target_col).alias("type")]
-            )
+            temp_edges = self.df.select(selected_cols).with_columns([
+                pl.lit(target_col).alias('type')
+            ])
             edge_dfs.append(temp_edges)
 
         if not edge_dfs:
@@ -91,18 +95,18 @@ class NetworkGraphFactory:
 
         self.edges_df = pl.concat(edge_dfs)
         self.edges_df = self.edges_df.filter(
-            pl.col("source") != pl.col("target")
+            pl.col('source') != pl.col('target')
         ).drop_nulls()
 
         for row in self.edges_df.iter_rows(named=True):
             label = row.get(self.config.edge_label_variable)
             if label is None:
-                label = str(row.get("type", ""))
-            attrs: EdgeAttrDict = {"label": label}
+                label = str(row.get('type', ''))
+            attrs: EdgeAttrDict = {'label': label}
             for attr in self.config.edge_attrs:
                 if attr in row:
                     attrs[attr] = row[attr]
-            self.edges_list.append((row["source"], row["target"], attrs))
+            self.edges_list.append((row['source'], row['target'], attrs))
 
     def _create_nodes(self) -> None:
         """Generate nodes from NODES and append to `nodes_list`.
@@ -116,7 +120,9 @@ class NetworkGraphFactory:
             if col not in self.df.columns:
                 continue
 
-            subset = self.df.filter(pl.col(col).is_not_null() & (pl.col(col) != ""))
+            subset = self.df.filter(
+                pl.col(col).is_not_null() & (pl.col(col) != '')
+            )
             for row in subset.iter_rows(named=True):
                 node = row[col]
                 if node in node_set:
@@ -124,7 +130,7 @@ class NetworkGraphFactory:
                 node_set.add(node)
 
                 attrs = {k: row[k] for k in self.config.node_attrs if k in row}
-                attrs["type"] = col
+                attrs['type'] = col
                 self.nodes_list.append((node, attrs))
 
     def _explode(self) -> None:
@@ -136,8 +142,10 @@ class NetworkGraphFactory:
             if col not in self.df.columns:
                 continue
 
-            self.df = self.df.with_columns(
-                [pl.col(col).str.split(self.config.explode_delimiter)]
-            )
+            self.df = self.df.with_columns([
+                pl.col(col).str.split(self.config.explode_delimiter)
+            ])
             self.df = self.df.explode(col)
-            self.df = self.df.with_columns([pl.col(col).str.strip_chars().alias(col)])
+            self.df = self.df.with_columns([
+                pl.col(col).str.strip_chars().alias(col)
+            ])

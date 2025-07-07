@@ -1,10 +1,13 @@
 import networkx as nx
-from cktk.schemas.network_graph_object import NetworkGraphObject
-from cktk.core.types import Metrics, ColorMap
+
+from cktk.core.types import ColorMap, Metrics
 from cktk.core.utils.color import create_distinct_hex_colormap
+from cktk.schemas.network_graph_object import NetworkGraphObject
 
 
-def build_graph(obj: NetworkGraphObject, max_iter: int = 500) -> nx.MultiDiGraph:
+def build_graph(
+    obj: NetworkGraphObject, max_iter: int = 500
+) -> nx.MultiDiGraph:
     """Construct the graph.
 
     Returns:
@@ -17,11 +20,13 @@ def build_graph(obj: NetworkGraphObject, max_iter: int = 500) -> nx.MultiDiGraph
     return G
 
 
-def calculate_centrality_metrics(G: nx.MultiDiGraph, max_iter: int = 500) -> Metrics:
+def calculate_centrality_metrics(
+    G: nx.MultiDiGraph, max_iter: int = 500
+) -> Metrics:
     metrics: Metrics = {
         # "eigenvector_centrality": nx.eigenvector_centrality(G, max_iter),
-        "degree_centrality": nx.degree_centrality(G),
-        "betweenness_centrality": nx.betweenness_centrality(G),
+        'degree_centrality': nx.degree_centrality(G),
+        'betweenness_centrality': nx.betweenness_centrality(G),
     }
     return metrics
 
@@ -38,5 +43,5 @@ def add_colormap_to_graph(
     if not colormap:
         colormap = create_distinct_hex_colormap(G, colorvar)
     for _, data in G.nodes(data=True):
-        group = data.get(colorvar) or ""
-        data["color"] = colormap.get(group, "#742727")
+        group = data.get(colorvar) or ''
+        data['color'] = colormap.get(group, '#742727')

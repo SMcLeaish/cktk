@@ -1,11 +1,11 @@
-from pydantic import BaseModel
 from dstlib.core.types import Source
+from pydantic import BaseModel
 
 
 class NetworkGraphConfig(BaseModel):
     node_size_variable: str
     explode_columns: list[str]
-    explode_delimiter: str = ";"
+    explode_delimiter: str = ';'
     filter_on_column: str | None
     filter_value: str | None
     edges: list[tuple[str, str]]

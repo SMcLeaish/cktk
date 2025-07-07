@@ -1,5 +1,13 @@
 from pydantic import BaseModel, Field
-from cktk.core.types import NodeList, EdgeList, Source, MetaData, Metrics, ColorMap
+
+from cktk.core.types import (
+    ColorMap,
+    EdgeList,
+    MetaData,
+    Metrics,
+    NodeList,
+    Source,
+)
 
 
 class NetworkGraphObject(BaseModel):
