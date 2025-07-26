@@ -1,31 +1,29 @@
 """Protocol that implements the 'explode_column' transformation.
 
-Defines an interface for types that implement column-exploding
-behavior.
-
-Implementing types must define a method to explode a specified column
-in a dataframe-like object, returning a new object of the same type.
-
-This allows uniform handling of transformation logic across different
-dataframe libraries or backends.
-
-Args:
-    df (T): The input dataframe to be transformed.
-    column (str): The name of the column to explode.
-
-Returns:
-    T: A new instance of the dataframe with the specified column
-    exploded.y
+Explodable type objects must have a 'config' property containing
+an explode_columns field and a 'df' DataFrameType property.
 """
 
-from abc import abstractmethod
 from typing import Protocol, Self
+
 from cktk.core.types import DataFrameType
 
 
-class Explodable(Protocol):
-    """Defines a protocol for exploding a column in a dataframe."""
+class ExplodableConfig(Protocol):
+    """Explodable types must have an explode_columns property."""
 
-    def explode(self) -> Self:
+    @property
+    def explode_columns(self) -> list[str]:
+        """Return the explode_columns property from the config."""
+        ...
+
+
+class Explodable(Protocol):
+    """Defines a protocol for exploding columns in a dataframe."""
+
+    config: ExplodableConfig
+    df: DataFrameType
+
+    def explode_columns(self) -> Self:
         """Explodable types have to implement explode."""
         ...

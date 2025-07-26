@@ -15,3 +15,4 @@ class NetworkGraphConfig:
     color_attr: str
     weight_attr: str
     edge_label_attr: str
+    graph_type: str

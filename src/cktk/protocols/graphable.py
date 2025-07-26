@@ -4,14 +4,10 @@ This module defines a protocol for converting dataframe-like objects
 into NetworkX graphs.
 """
 
-from collections.abc import Hashable
 from typing import TYPE_CHECKING, Protocol, Self
 
-if TYPE_CHECKING:
-    import networkx as nx
 
-
-class Graphable[T](Protocol):
+class Graphable(Protocol):
     """Interface for types that implement the 'graph' transformation.
 
     Implementing types must provide a method to convert an input
@@ -19,7 +15,7 @@ class Graphable[T](Protocol):
     MultiDiGraph.
     """
 
-    def graph(self) -> Self:
+    def create_graph(self) -> Self:
         """Construct a NetworkX graph from the input data.
 
         Args:
