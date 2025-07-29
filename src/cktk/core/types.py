@@ -12,4 +12,5 @@ type GraphType = (
     | nx.DiGraph[Hashable]
     | nx.MultiGraph[Hashable]
     | nx.MultiDiGraph[Hashable]
+    | None
 )

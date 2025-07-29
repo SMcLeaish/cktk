@@ -24,6 +24,6 @@ class Explodable(Protocol):
     config: ExplodableConfig
     df: DataFrameType
 
-    def explode_columns(self) -> Self:
+    def apply_explode(self) -> Self:
         """Explodable types have to implement explode."""
         ...

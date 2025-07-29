@@ -10,7 +10,7 @@ import networkx as nx
 from cktk.core.types import DataFrameType, GraphType
 from cktk.dataclasses.network_graph_config import NetworkGraphConfig
 from cktk.protocols import Explodable, Graphable
-from cktk.utils.explode import explode_util
+from cktk.utils.df_utils import explode_util
 
 
 class NetworkGraphTransformer(Explodable, Graphable):
@@ -28,9 +28,8 @@ class NetworkGraphTransformer(Explodable, Graphable):
         """
         self.config = config
         self.df = df
-        self.graph: GraphType
 
-    def explode_columns(self) -> Self:
+    def apply_explode(self) -> Self:
         """Explodes columns in config.explode_columns list."""
         explode_util(self)
         return self

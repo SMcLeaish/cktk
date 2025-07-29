@@ -4,7 +4,15 @@ This module defines a protocol for converting dataframe-like objects
 into NetworkX graphs.
 """
 
-from typing import TYPE_CHECKING, Protocol, Self
+from typing import Protocol, Self
+
+
+class GraphableConfig(Protocol):
+    @property
+    def directed(self) -> bool: ...
+
+    @property
+    def multi(self) -> bool: ...
 
 
 class Graphable(Protocol):
@@ -14,6 +22,8 @@ class Graphable(Protocol):
     of type T into a NetworkX Graph | DiGraph | MultiGraph |
     MultiDiGraph.
     """
+
+    config: GraphableConfig
 
     def create_graph(self) -> Self:
         """Construct a NetworkX graph from the input data.
