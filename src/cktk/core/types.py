@@ -7,10 +7,3 @@ if TYPE_CHECKING:
     import polars as pl  # pragma: no cover
 
 type DataFrameType = pd.DataFrame | pl.DataFrame | pl.LazyFrame
-type GraphType = (
-    nx.Graph[Hashable]
-    | nx.DiGraph[Hashable]
-    | nx.MultiGraph[Hashable]
-    | nx.MultiDiGraph[Hashable]
-    | None
-)
