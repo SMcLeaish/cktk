@@ -14,6 +14,9 @@ class GraphableConfig(Protocol):
     @property
     def multi(self) -> bool: ...
 
+    @property
+    def edges(self) -> list[tuple[str, str]]: ...
+
 
 class Graphable(Protocol):
     """Interface for types that implement the 'graph' transformation.

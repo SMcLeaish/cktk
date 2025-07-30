@@ -23,11 +23,11 @@ def create_graph(obj: Graphable) -> GraphType:
     directed = obj.config.directed
     multi = obj.config.multi
     if not directed and not multi:
-        return nx.Graph()
+        return nx.Graph().add_edges_from
     if directed and not multi:
         return nx.DiGraph()
     if not directed and multi:
         return nx.MultiGraph()
     if directed and multi:
-        return nx.MultiGraph()
+        return nx.MultiDiGraph()
     raise AttributeError
