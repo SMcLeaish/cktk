@@ -37,3 +37,12 @@ def get_graph_type(obj: Graphable) -> GraphType:
         return GRAPH_TYPE_MAP[obj.config.directed, obj.config.multi]()
     except KeyError as e:
         raise GraphTypeError(obj.config.directed, obj.config.multi) from e
+
+
+def add_edges(obj: Graphable) -> GraphType: ...
+
+
+def add_nodes(obj: Graphable) -> GraphType: ...
+
+
+def add_weight(obj: Graphable) -> GraphType: ...
