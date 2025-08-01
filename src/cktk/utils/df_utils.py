@@ -19,27 +19,19 @@ from cktk.protocols.explodable import Explodable
 logger = logging.getLogger(__name__)
 
 
-class DF(Enum):
-    """Enum for DataFrameType."""
-
-    PANDAS = 'pandas'
-    POLARS = 'polars'
-
-
-def _check_df_type(func: str, df: DataFrameType) -> tuple[DF, pl.DataFrame]:
+def convert_to_polars(df: DataFrameType) -> pl.DataFrame:
     if isinstance(df, pd.DataFrame):
-        return (DF.PANDAS, pl.from_dataframe(df))
+        return pl.from_dataframe(df)
     if isinstance(df, pl.DataFrame):
-        return (DF.POLARS, df)
+        return df
     logger.error(
-        '%s received an object with an invalid type %s',
-        func,
+        'Received an object with an invalid type %s',
         type(df).__name__,
     )
     raise TypeError
 
 
-def explode_util(obj: Explodable) -> Explodable:
+def explode_on_column(obj: Explodable) -> Explodable:
     """Explodes columns on Explodable object.
 
     Columns defined in the config object as explode_columns
@@ -58,12 +50,12 @@ def explode_util(obj: Explodable) -> Explodable:
     Raises:
         TypeError if obj.df is not a pandas or polars dataframe.
     """
-    df_type, obj.df = _check_df_type(explode_util.__qualname__, obj.df)
-
-    obj.df = obj.df.explode(obj.config.explode_columns)
+    obj.df = obj.df.explode(obj.explode_columns)
     logger.info(
-        'Exploded %s dataframe columns: %s',
-        df_type,
-        obj.config.explode_columns,
+        'Exploded dataframe columns: %s',
+        obj.explode_columns,
     )
     return obj
+
+
+def concatenate_on_columns(df: pl.DataFrame) -> pl.DataFrame: ...

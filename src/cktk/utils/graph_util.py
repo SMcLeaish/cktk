@@ -3,19 +3,10 @@
 Accepts a NetworkGraphTransormer object.
 """
 
-from collections.abc import Hashable
-
 import networkx as nx
 
+from cktk.core.types import GraphType
 from cktk.protocols.graphable import Graphable
-
-type GraphType = (
-    nx.Graph[Hashable]
-    | nx.DiGraph[Hashable]
-    | nx.MultiGraph[Hashable]
-    | nx.MultiDiGraph[Hashable]
-    | None
-)
 
 GRAPH_TYPE_MAP: dict[tuple[bool, bool], type[GraphType]] = {
     (False, False): nx.Graph,
@@ -34,9 +25,9 @@ class GraphTypeError(TypeError):
 
 def get_graph_type(obj: Graphable) -> GraphType:
     try:
-        return GRAPH_TYPE_MAP[obj.config.directed, obj.config.multi]()
+        return GRAPH_TYPE_MAP[obj.directed, obj.multi]()
     except KeyError as e:
-        raise GraphTypeError(obj.config.directed, obj.config.multi) from e
+        raise GraphTypeError(obj.directed, obj.multi) from e
 
 
 def add_edges(obj: Graphable) -> GraphType: ...

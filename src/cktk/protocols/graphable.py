@@ -4,20 +4,12 @@ This module defines a protocol for converting dataframe-like objects
 into NetworkX graphs.
 """
 
-from typing import Protocol, Self
+from typing import Protocol, runtime_checkable
+
+from cktk.core.types import GraphType
 
 
-class GraphableConfig(Protocol):
-    @property
-    def directed(self) -> bool: ...
-
-    @property
-    def multi(self) -> bool: ...
-
-    @property
-    def edges(self) -> list[tuple[str, str]]: ...
-
-
+@runtime_checkable
 class Graphable(Protocol):
     """Interface for types that implement the 'graph' transformation.
 
@@ -26,9 +18,11 @@ class Graphable(Protocol):
     MultiDiGraph.
     """
 
-    config: GraphableConfig
+    directed: bool
+    multi: bool
+    edges: list[tuple[str, str]]
 
-    def create_graph(self) -> Self:
+    def create_graph(self) -> GraphType:
         """Construct a NetworkX graph from the input data.
 
         Args:
