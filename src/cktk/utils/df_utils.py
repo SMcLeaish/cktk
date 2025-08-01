@@ -31,7 +31,7 @@ def convert_to_polars(df: DataFrameType) -> pl.DataFrame:
     raise TypeError
 
 
-def explode_on_column(obj: Explodable) -> Explodable:
+def explode_on_columns(obj: Explodable) -> Explodable:
     """Explodes columns on Explodable object.
 
     Columns defined in the config object as explode_columns
