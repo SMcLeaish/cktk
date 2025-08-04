@@ -4,14 +4,24 @@ Network graph structure is defined in the NetworkGraphConfig object.
 """
 
 from dataclasses import dataclass
+import logging
 
 import polars as pl
 
+from cktk.core.types import EdgeList, GraphType
 from cktk.utils.df_utils import (
     edges_from_columns,
     explode_on_columns,
 )
-from cktk.utils.graph_util import GraphType, get_graph_type
+from cktk.utils.graph_util import get_graph_type
+
+logger = logging.getLogger(__name__)
+
+
+class TransformerAttributeError(AttributeError):
+    def __init__(self, value: str):
+        msg = f'{value} must be defined'
+        super().__init__(msg)
 
 
 @dataclass(eq=True, frozen=True)
@@ -27,7 +37,7 @@ class NetworkGraphTransformer:
         Args:
             df: DataFrameType object
         """
-        self.edges: list[tuple[str, str]]
+        self.edges: EdgeList
         self.nodes: list[str]
         self.explode_columns: list[str] | None
         self.explode_delimitter: str
@@ -38,15 +48,11 @@ class NetworkGraphTransformer:
         self.edge_label_attr: str
         self.directed: bool
         self.multi: bool
-
-    def apply_explode(self) -> pl.DataFrame:
-        return explode_on_columns(self)
+        self.df: pl.DataFrame
 
     def create_graph(self) -> GraphType:
         """Creates networkx graph from a dataframe."""
-        if self.explode_columns is not None:
-            working_df = self.apply_explode()
-        else:
-            working_df = self.df
+        working_df = explode_on_columns(self)
         g = get_graph_type(self)
+        print(g)
         edges_from_columns(working_df, self.edges, self.edge_attrs)
