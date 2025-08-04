@@ -4,21 +4,18 @@ Network graph structure is defined in the NetworkGraphConfig object.
 """
 
 from dataclasses import dataclass
-from typing import Self
 
-from cktk.core.types import DataFrameType
-from cktk.protocols.explodable import Explodable
-from cktk.protocols.graphable import Graphable
+import polars as pl
+
 from cktk.utils.df_utils import (
-    concatenate_on_columns,
-    convert_to_polars,
-    explode_on_column,
+    edges_from_columns,
+    explode_on_columns,
 )
 from cktk.utils.graph_util import GraphType, get_graph_type
 
 
 @dataclass(eq=True, frozen=True)
-class NetworkGraphTransformer(Explodable, Graphable):
+class NetworkGraphTransformer:
     """Transformer class, creates a networkx object from a dataframe.
 
     Implements Explodable and Graphable Protocols.
@@ -42,10 +39,14 @@ class NetworkGraphTransformer(Explodable, Graphable):
         self.directed: bool
         self.multi: bool
 
-    def create_graph(self, df: DataFrameType) -> GraphType:
-        self.df = convert_to_polars(df)
+    def apply_explode(self) -> pl.DataFrame:
+        return explode_on_columns(self)
+
+    def create_graph(self) -> GraphType:
         """Creates networkx graph from a dataframe."""
         if self.explode_columns is not None:
-            explode_on_columns(self)
+            working_df = self.apply_explode()
+        else:
+            working_df = self.df
         g = get_graph_type(self)
-        concatenate_on_columns(self.df, self.edges, self.edge_attrs)
+        edges_from_columns(working_df, self.edges, self.edge_attrs)

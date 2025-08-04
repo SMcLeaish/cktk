@@ -5,8 +5,8 @@ Accepts a NetworkGraphTransormer object.
 
 import networkx as nx
 
+from cktk.core.network_graph_transformer import NetworkGraphTransformer
 from cktk.core.types import GraphType
-from cktk.protocols.graphable import Graphable
 
 GRAPH_TYPE_MAP: dict[tuple[bool, bool], type[GraphType]] = {
     (False, False): nx.Graph,
@@ -23,17 +23,17 @@ class GraphTypeError(TypeError):
         super().__init__(msg)
 
 
-def get_graph_type(obj: Graphable) -> GraphType:
+def get_graph_type(obj: NetworkGraphTransformer) -> GraphType:
     try:
         return GRAPH_TYPE_MAP[obj.directed, obj.multi]()
     except KeyError as e:
         raise GraphTypeError(obj.directed, obj.multi) from e
 
 
-def add_edges(obj: Graphable) -> GraphType: ...
+def add_edges(obj: NetworkGraphTransformer) -> GraphType: ...
 
 
-def add_nodes(obj: Graphable) -> GraphType: ...
+def add_nodes(obj: NetworkGraphTransformer) -> GraphType: ...
 
 
-def add_weight(obj: Graphable) -> GraphType: ...
+def add_weight(obj: NetworkGraphTransformer) -> GraphType: ...

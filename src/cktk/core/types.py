@@ -16,3 +16,5 @@ type GraphType = (
     | nx.MultiDiGraph[Hashable]
     | None
 )
+
+type EdgeList = list[tuple[str, str]]
