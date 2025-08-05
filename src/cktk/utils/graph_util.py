@@ -23,7 +23,7 @@ class GraphTypeError(TypeError):
         super().__init__(msg)
 
 
-def get_graph_type(obj: NetworkGraphTransformer) -> GraphType:
+def set_graph_type(obj: NetworkGraphTransformer) -> GraphType:
     try:
         return GRAPH_TYPE_MAP[obj.directed, obj.multi]()
     except KeyError as e:

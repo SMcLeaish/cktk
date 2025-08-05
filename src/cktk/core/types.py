@@ -3,11 +3,6 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     import networkx as nx  # pragma: no cover
-    import pandas as pd  # pragma: no cover
-    import polars as pl  # pragma: no cover
-
-type DataFrameType = pd.DataFrame | pl.DataFrame | pl.LazyFrame
-
 
 type GraphType = (
     nx.Graph[Hashable]
@@ -17,4 +12,11 @@ type GraphType = (
     | None
 )
 
-type EdgeList = list[tuple[str, str]]
+type NodeAttrDict = dict[str, str | float | None]
+type EdgeAttrDict = dict[str, str | float | None]
+
+type NodeTuple = tuple[str, NodeAttrDict]
+type EdgeTuple = tuple[str, str, EdgeAttrDict]
+
+type NodeList = list[NodeTuple]
+type EdgeList = list[EdgeTuple]
